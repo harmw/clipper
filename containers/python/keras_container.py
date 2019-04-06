@@ -27,7 +27,12 @@ class KerasContainer(rpc.ModelContainerBase):
             dir=path, predict_fname=predict_fname)
         self.predict_func = load_predict_func(predict_path)
 
-        self.model = load_model(os.path.join(path, "keras_model.h5"))
+        model_file = os.path.join(path, "keras_model.h5")
+        if os.path.exists(model_file):
+            self.model = load_model(model_file)
+        else:
+            print("keras_model.h5 not found, it's probably pickled")
+            self.model = None
 
     def predict_ints(self, inputs):
         preds = self.predict_func(self.model, inputs)
